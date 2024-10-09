@@ -20,7 +20,13 @@ signUpForm.addEventListener("submit", async (e) => {
       password
     );
     // Registro exitoso
-    console.log(userCredentials);
+    // Cerrar el modal con instancia
+    const signupModal = document.querySelector("#signup-modal");
+    const modal = bootstrap.Modal.getInstance(signupModal);
+    modal.hide();
+    // Limpiar el formulario
+    signUpForm.reset();
+
     // Mostrar mensaje de éxito
     showMessage("Usuario registrado", "success");
   } catch (error) {
@@ -29,14 +35,12 @@ signUpForm.addEventListener("submit", async (e) => {
     // Mostrar mensaje de error
     if (error.code === "auth/email-already-in-use") {
       showMessage("El correo ya está en uso", "error");
-    } else {
-      showMessage(error.code, "error");
-    }
-
-    if (error.code === "auth/weak-password") {
+    } else if (error.code === "auth/invalid-email") {
+      showMessage("Correo inválido", "error");
+    } else if (error.code === "auth/weak-password") {
       showMessage("Contraseña vulnerable", "error");
-    } else {
-      showMessage(error.code, "error");
+    } else if (error.code) {
+      showMessage(error.message, "error");
     }
   }
 });
