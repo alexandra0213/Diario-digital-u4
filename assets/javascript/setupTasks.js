@@ -1,4 +1,4 @@
-import { createTask, onGetTask } from "./firebase.js";
+import { createTask, onGetTask, deleteTaks} from "./firebase.js";
 import { showMessage } from "./toastMessage.js";
 
 const taskForm = document.querySelector("#task-form");
@@ -34,14 +34,34 @@ export const setupTasks = () => {
     querySnapshot.forEach((doc) => {
       const data = doc.data();
 
-      tasksHtml += `<article class="task-article border border-2 rounded-2 p-3">
-              <h4>${data.title}</h4>
-              <hr />
-              <p>${data.description}</p>
-            </article>`;
+      tasksHtml += `
+      <article class="task-container border border-2 rounded-2 p-3 my-3">
+        <header class="d-flex justify-content-between ">
+          <h4>${data.title}</h4>
+          <div>
+            <button class="btn btn-danger btn-eliminar bi bi-trash2 " data-id="${doc.id}">Eliminar</button>
+          </div>
+        </header>
+        <hr />
+        <p>${data.description}</p>
+      </article>
+      `;
     });
 
     // Mostrar las tareas en el DOM
     tasksContainer.innerHTML = tasksHtml;
+      //UPDATE
+
+    //DELETE
+    //obtenemos el btn eliminar
+    const btnsEliminar = document.querySelectorAll(".btn-eliminar");
+      
+    btnsEliminar.forEach((btn) => {
+
+      btn.addEventListener("click", ({ target: { dataset } }) => {
+        deleteTaks(dataset.id);
+        showMessage("Tarea Eliminada", "succes");
+      });
+    }); 
   });
 };
